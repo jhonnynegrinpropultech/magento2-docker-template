@@ -1,24 +1,25 @@
 services:
   proxy:
-    restart: unless-stopped
-    image: proxy:latest
+    image: nginx:latest
     ports:
       - "443:8443"
     volumes:
       - ./nginx/proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       - varnish
     networks:
       - magento-network
-  web:
     restart: unless-stopped
-    working_dir: /var/www/html/
+  web:
     image: nginx:latest
     ports:
       - "8000:8000"
     volumes:
       - ./src:/var/www/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    working_dir: /var/www/html/
+    restart: unless-stopped
     depends_on:
       - php
       - db
@@ -119,13 +120,12 @@ services:
       resources:
         limits:
           memory: 1G
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health?pretty"]
       interval: 30s
       timeout: 10s
       retries: 3
-
+    restart: unless-stopped
   redis:
     image: redis:7.2
     ports:
@@ -134,13 +134,26 @@ services:
       - redisdata:/data
     networks:
       - magento-network
-    restart: unless-stopped
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 3
-
+    restart: unless-stopped
+  redis-session:
+    image: redis:7.2
+    ports:
+      - "6380:6380"
+    volumes:
+      - redissessiondata:/data
+    networks:
+      - magento-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
   rabbitmq:
     image: rabbitmq:3.13-management
     ports:
@@ -174,6 +187,7 @@ networks:
 volumes:
   dbdata:
   redisdata:
+  redissessiondata:
   opensearchdata:
   rabbitmqdata:
 
