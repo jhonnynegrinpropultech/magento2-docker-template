@@ -2,4 +2,18 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$SCRIPT_DIR" || exit
 
-magento
+THEME_NAME="Cristian/Quiroz"
+LANGUAGES_BACKEND="es_CL en_US"
+LANGUAGES_FRONTEND="es_CL"
+DEPLOYMENT_JOBS=2
+
+set -e
+
+./app rm -rf generated/* vendor/composer/ClassLoader.php pub/static/* var/cache/*
+./app composer install --no-ansi --no-interaction --no-progress --prefer-dist --no-dev
+./magento set:up
+./magento s:d:c
+./magento s:s:d -j$DEPLOYMENT_JOBS -aadminhtml $LANGUAGES_BACKEND
+./magento s:s:d -j$DEPLOYMENT_JOBS -afrontend --theme $THEME_NAME $LANGUAGES_FRONTEND
+./magento c:enable
+./magento maintenance:disable

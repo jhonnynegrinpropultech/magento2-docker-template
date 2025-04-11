@@ -32,7 +32,7 @@ services:
       - "80:80"
       - "6082:6082"
     volumes:
-      - ./varnish/default.vcl:/etc/varnish/default.vcl
+      - ./varnish/default.vcl:/etc/varnish/default.vcl:ro
     depends_on:
       - web
     networks:
@@ -96,7 +96,7 @@ services:
         limits:
           memory: 2G
   opensearch:
-    image: opensearchproject/opensearch:2.0.0
+    image: opensearchproject/opensearch:2.12.0
     ports:
       - "9200:9200"
       - "9600:9600"
@@ -105,6 +105,7 @@ services:
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
       - "DISABLE_SECURITY_PLUGIN=true"
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m -Dos.metrics.cgroup.cpu.path=/ -Dos.metrics.cgroup.memory.path=/"
     ulimits:
       memlock:
         soft: -1
@@ -114,6 +115,7 @@ services:
         hard: 65536
     volumes:
       - opensearchdata:/usr/share/opensearch/data
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
     networks:
       - magento-network
     deploy:
@@ -179,10 +181,6 @@ services:
 networks:
   magento-network:
     driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 172.20.0.0/16
 
 volumes:
   dbdata:
