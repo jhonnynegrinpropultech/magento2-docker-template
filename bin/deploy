@@ -10,10 +10,13 @@ DEPLOYMENT_JOBS=2
 set -e
 
 ./app rm -rf generated/* vendor/composer/ClassLoader.php pub/static/* var/cache/*
-./app composer install --no-ansi --no-interaction --no-progress --prefer-dist --no-dev
+./app composer install --no-interaction --no-progress --prefer-dist --no-dev
 ./magento set:up
 ./magento s:d:c
 ./magento s:s:d -j$DEPLOYMENT_JOBS -aadminhtml $LANGUAGES_BACKEND
 ./magento s:s:d -j$DEPLOYMENT_JOBS -afrontend --theme $THEME_NAME $LANGUAGES_FRONTEND
+./varnish varnishadm "ban req.url ~ ."
 ./magento c:enable
 ./magento maintenance:disable
+
+docker compose restart varnish web rabbitmq php redis
