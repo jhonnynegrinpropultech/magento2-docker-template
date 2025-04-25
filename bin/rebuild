@@ -3,5 +3,18 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$SCRIPT_DIR" || exit
 
 docker compose down
+
+# Create a directory for the certificates if it doesn't exist
+sudo mkdir -p /etc/nginx/ssl
+# Generate a self-signed certificate and key in one command
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout $SCRIPT_DIR/../nginx/ssl/magento.key \
+  -out $SCRIPT_DIR/../nginx/ssl/magento.crt \
+  -subj "/C=CL/ST=RM/L=Santiago/O=TI/CN=desarrollo.oteroindustrial.cl"
+
+# Set proper permissions
+sudo chmod 600 $SCRIPT_DIR/../nginx/ssl/magento.key
+sudo chmod 644 $SCRIPT_DIR/../nginx/ssl/magento.crt
+
 docker compose up -d
 

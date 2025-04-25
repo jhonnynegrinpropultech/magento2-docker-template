@@ -21,4 +21,4 @@ set -e
 ./magento c:enable
 ./magento maintenance:disable
 
-docker compose restart varnish web rabbitmq php redis
+docker compose restart varnish proxy web rabbitmq php redis
