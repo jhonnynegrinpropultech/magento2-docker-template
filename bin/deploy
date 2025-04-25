@@ -10,15 +10,31 @@ DEPLOYMENT_JOBS=2
 set -e
 
 ./magento maintenance:enable
+echo "Clear varnish cache"
 ./varnish varnishadm "ban req.url ~ ."
-./app rm -rf generated/* vendor/composer/ClassLoader.php pub/static/* var/cache/*
-./app composer install --no-interaction --no-progress --prefer-dist --no-dev
+
+echo "Clear redis cache"
 ./redis-cache redis-cli flushall
+
+echo "Clear cached files"
+./app rm -rf generated/* vendor/composer/ClassLoader.php pub/static/* var/cache/*
+
+./app composer install --no-interaction --no-progress --prefer-dist --no-dev
 ./magento set:up
 ./magento s:d:c
 ./magento s:s:d -j$DEPLOYMENT_JOBS -aadminhtml $LANGUAGES_BACKEND
 ./magento s:s:d -j$DEPLOYMENT_JOBS -afrontend --theme $THEME_NAME $LANGUAGES_FRONTEND
+
+echo "Setting default URLs"
+./magento config:set -e  "web/unsecure/base_url" "https://qa.oteroindustrial.cl/"
+./magento config:set -e  "web/unsecure/base_link_url" "https://qa.oteroindustrial.cl/"
+./magento config:set -e  "web/unsecure/base_media_url" "https://qa.oteroindustrial.cl/media/"
+./magento config:set -e  "web/secure/base_url" "https://qa.oteroindustrial.cl/"
+./magento config:set -e  "web/secure/base_link_url" "https://qa.oteroindustrial.cl/"
+./magento config:set -e  "web/secure/base_media_url" "https://qa.oteroindustrial.cl/media/"
+
 ./magento c:enable
 ./magento maintenance:disable
 
+echo "Restarting containers"
 docker compose restart varnish proxy web rabbitmq php redis
