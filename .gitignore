@@ -3,3 +3,4 @@
 *.gz
 *.sql
 /nginx/ssl/*
+/varnish/default.vcl
