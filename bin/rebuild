@@ -23,5 +23,5 @@ sub vcl_backend_error {
     return (deliver);
 }
 EOF
-exit;
+
 docker compose up -d
