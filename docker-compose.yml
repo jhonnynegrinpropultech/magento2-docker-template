@@ -33,12 +33,13 @@ services:
       - "6082:6082"
     volumes:
       - ./varnish/default.vcl:/etc/varnish/default.vcl:ro
+      - ./varnish/error_pages:/etc/varnish/error_pages:ro
     depends_on:
       - web
     networks:
       - magento-network
     environment:
-      - VARNISH_SIZE=1G
+      - VARNISH_SIZE=2G
     deploy:
       resources:
         limits:
@@ -58,7 +59,7 @@ services:
         uid: 1000
     volumes:
       - ./src:/var/www/html
-      - ./php/custom.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+      - ./php/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
     depends_on:
       - db
       - redis
@@ -128,6 +129,13 @@ services:
       timeout: 10s
       retries: 3
     restart: unless-stopped
+    command: >
+      bash -c '
+        bin/opensearch-plugin install -b analysis-phonetic
+        bin/opensearch-plugin install -b analysis-icu
+        exec /usr/share/opensearch/opensearch-docker-entrypoint.sh
+      '
+
   redis:
     image: redis:7.2
     ports:

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temporarily Unavailable</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --background-color: #f5f7fa;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --secondary-text: #7f8c8d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 40px;
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .icon {
+            margin-bottom: 20px;
+            animation: spin 4s linear infinite;
+            width: 80px;
+            height: 80px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-top: 0;
+            font-weight: 600;
+            font-size: 28px;
+        }
+
+        .status {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            color: var(--text-color);
+            margin-bottom: 12px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #ecf0f1;
+            margin: 30px 0;
+        }
+
+        .help-section {
+            text-align: left;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+
+        .help-section h2 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-top: 0;
+        }
+
+        .reasons {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .reasons li {
+            margin-bottom: 10px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .reasons li::before {
+            content: "•";
+            color: var(--accent-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .small {
+            font-size: 12px;
+            color: var(--secondary-text);
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- SVG Gear Icon -->
+    <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <path fill="#e74c3c" d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336c44.2 0 80-35.8 80-80s-35.8-80-80-80s-80 35.8-80 80s35.8 80 80 80z"/>
+    </svg>
+
+    <h1>Site Temporarily Unavailable</h1>
+    <div class="status">Error: "} + beresp.status + " " + beresp.reason + {"</div>
+
+    <p>We're sorry, our system is currently experiencing technical difficulties.</p>
+    <p>Our team has been notified and is working to resolve the issue.</p>
+
+    <div class="divider"></div>
+
+    <div class="help-section">
+        <h2>Common Reasons for This Error:</h2>
+        <ul class="reasons">
+            <li><strong>Backend server maintenance</strong> - The application server may be restarting or undergoing maintenance.</li>
+            <li><strong>High server load</strong> - The server might be experiencing unusually high traffic.</li>
+            <li><strong>Connection timeout</strong> - The backend server took too long to respond.</li>
+            <li><strong>Database connectivity issues</strong> - The application may be unable to connect to its database.</li>
+            <li><strong>Configuration problem</strong> - There might be a misconfiguration between Varnish and the backend server.</li>
+        </ul>
+    </div>
+
+    <p class="small">Please try refreshing the page in a few minutes. If the problem persists, contact the site administrator.</p>
+</div>
+</body>
+</html>

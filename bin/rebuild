@@ -3,15 +3,25 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 cd "$SCRIPT_DIR" || exit
 
 docker compose down
-
-sudo rm $SCRIPT_DIR/../nginx/ssl/*
-
+[ -n "$(ls -A $SCRIPT_DIR/../nginx/ssl/ 2>/dev/null)" ] && rm $SCRIPT_DIR/../nginx/ssl/*
 # Generate a self-signed certificate and key in one command
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
   -keyout $SCRIPT_DIR/../nginx/ssl/magento.key \
   -out $SCRIPT_DIR/../nginx/ssl/magento.crt \
   -subj "/C=CL/ST=RM/L=Santiago/O=TI/CN=qa.oteroindustrial.cl"
-
 chmod 664 $SCRIPT_DIR/../nginx/ssl/*
+
+#Update Varnish vcl error page
+ERROR_PAGE=$(cat $SCRIPT_DIR/../varnish/error_pages/backend_fetch_failed.html | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
+rm $SCRIPT_DIR/../varnish/default.vcl
+cp $SCRIPT_DIR/../varnish/default.vcl.dist $SCRIPT_DIR/../varnish/default.vcl
+cat >> $SCRIPT_DIR/../varnish/default.vcl << EOF
+
+sub vcl_backend_error {
+    set beresp.http.Content-Type = "text/html; charset=utf-8";
+    synthetic({"$ERROR_PAGE"});
+    return (deliver);
+}
+EOF
 
 docker compose up -d
