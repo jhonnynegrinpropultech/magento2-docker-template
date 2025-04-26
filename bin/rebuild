@@ -12,7 +12,11 @@ openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
 chmod 664 $SCRIPT_DIR/../nginx/ssl/*
 
 #Update Varnish vcl error page
-ERROR_PAGE=$(cat $SCRIPT_DIR/../varnish/error_pages/backend_fetch_failed.html | sed 's/"/\\"/g' | awk '{printf "%s\\n", $0}')
+ERROR_PAGE=$(cat $SCRIPT_DIR/../varnish/error_pages/backend_fetch_failed.html |
+  sed 's/"/\"/g' |
+  sed 's/###STATUS###/"} + beresp.status + {"/' |
+  sed 's/###REASON###/"} + beresp.reason + {"/' |
+  awk '{printf "%s\n", $0}')
 [ -n "$(ls -A $SCRIPT_DIR/../varnish/default.vcl 2>/dev/null)" ] && rm $SCRIPT_DIR/../varnish/default.vcl
 cp $SCRIPT_DIR/../varnish/default.vcl.dist $SCRIPT_DIR/../varnish/default.vcl
 cat >> $SCRIPT_DIR/../varnish/default.vcl << EOF
