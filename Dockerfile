@@ -100,8 +100,6 @@ RUN echo 'xdebug.mode=off' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.in
     echo '#xdebug.start_with_request=yes' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini && \
     echo '#xdebug.log=/var/log/xdebug.log' >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-# Set up cron job for Magento
-RUN echo '* * * * * cd /var/www/html && php bin/magento cron:run | grep -v "Ran jobs by schedule" >> /var/www/html/var/log/magento.cron.log 2>&1' | crontab -
 
 # Create app directory
 WORKDIR /var/www/html
