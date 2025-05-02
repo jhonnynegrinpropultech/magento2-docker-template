@@ -9,7 +9,7 @@ DEPLOYMENT_JOBS=2
 
 set -e
 
-./magento maintenance:enable
+[ -n "$(ls -A $SCRIPT_DIR/../src/vendor/composer/ClassLoader.php 2>/dev/null)" ] && ./magento maintenance:enable
 echo "Clear varnish cache"
 ./varnish varnishadm "ban req.url ~ ."
 
@@ -17,13 +17,13 @@ echo "Clear redis cache"
 ./redis-cache redis-cli flushall
 
 echo "Clear cached files"
-./app rm -rf generated/* vendor/composer/ClassLoader.php pub/static/* var/cache/*
+./app [ -n "$(ls -A vendor/composer/ClassLoader.php 2>/dev/null)" ] && rm vendor/composer/ClassLoader.php
+./app [ -n "$(ls -A generated 2>/dev/null)" ] && rm -rf generated/*
+./app [ -n "$(ls -A pub/static/ 2>/dev/null)" ] && rm -rf pub/static/*
+./app [ -n "$(ls -A var/cache/ 2>/dev/null)" ] && rm -rf var/cache/*
 
 ./app composer install --no-interaction --no-progress --prefer-dist --no-dev
 ./magento set:up
-./magento s:d:c
-./magento s:s:d -j$DEPLOYMENT_JOBS -aadminhtml $LANGUAGES_BACKEND
-./magento s:s:d -j$DEPLOYMENT_JOBS -afrontend --theme $THEME_NAME $LANGUAGES_FRONTEND
 
 echo "Setting default URLs"
 ./magento config:set -e  "web/unsecure/base_url" "https://qa.oteroindustrial.cl/"
@@ -32,6 +32,16 @@ echo "Setting default URLs"
 ./magento config:set -e  "web/secure/base_url" "https://qa.oteroindustrial.cl/"
 ./magento config:set -e  "web/secure/base_link_url" "https://qa.oteroindustrial.cl/"
 ./magento config:set -e  "web/secure/base_media_url" "https://qa.oteroindustrial.cl/media/"
+
+echo "Setting config for varnish"
+./magento config:set -e system/full_page_cache/caching_application 2
+./magento config:set -e system/full_page_cache/varnish/access_list "127.0.0.1,web,php"
+./magento config:set -e system/full_page_cache/varnish/backend_host web
+./magento config:set -e system/full_page_cache/varnish/backend_port 8000
+
+./magento s:d:c
+./magento s:s:d -j$DEPLOYMENT_JOBS -aadminhtml $LANGUAGES_BACKEND
+./magento s:s:d -j$DEPLOYMENT_JOBS -afrontend --theme $THEME_NAME $LANGUAGES_FRONTEND
 
 ./magento c:enable
 ./magento maintenance:disable
