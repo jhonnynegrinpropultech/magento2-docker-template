@@ -28,4 +28,4 @@ sub vcl_backend_error {
 }
 EOF
 
-docker compose up -d
+docker compose up -d --remove-orphans
